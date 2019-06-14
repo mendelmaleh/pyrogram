@@ -209,7 +209,7 @@ class Filters:
     def command(
         commands: str or list,
         prefix: str or list = "/",
-        separator: str = " ",
+        separator: str = None,
         case_sensitive: bool = False
     ):
         """Filter commands, i.e.: text messages starting with "/" or any other custom prefix.
@@ -227,7 +227,7 @@ class Filters:
                 Can be None or "" (empty string) to allow commands with no prefix at all.
 
             separator (``str``, *optional*):
-                The command arguments separator. Defaults to " " (white space).
+                The command arguments separator. Defaults to str.split() default behavior.
                 Examples: /start first second, /start-first-second, /start.first.second.
 
             case_sensitive (``bool``, *optional*):
