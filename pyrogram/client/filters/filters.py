@@ -210,6 +210,7 @@ class Filters:
         commands: str or list,
         prefix: str or list = "/",
         separator: str = None,
+        args: int = -1,
         case_sensitive: bool = False
     ):
         """Filter commands, i.e.: text messages starting with "/" or any other custom prefix.
@@ -230,6 +231,10 @@ class Filters:
                 The command arguments separator. Defaults to str.split() default behavior.
                 Examples: /start first second, /start-first-second, /start.first.second.
 
+            args (``int``, *optional*):
+                The number of command arguments. Defaults to -1, meaning every word will be considered an argument and will be returned in its own list element. If a number is given and there are extra arguments, they will be part of the last element of the list.
+                Example: when args=2, "/start first second third" will be ["/start", "first", "second third"]
+
             case_sensitive (``bool``, *optional*):
                 Pass True if you want your command(s) to be case sensitive. Defaults to False.
                 Examples: when True, command="Start" would trigger /Start but not /start.
@@ -241,7 +246,7 @@ class Filters:
             if text:
                 for p in flt.p:
                     if text.startswith(p):
-                        s = text.split(flt.s)
+                        s = text.split(flt.s, flt.an)
                         c, a = s[0][len(p):], s[1:]
                         c = c if flt.cs else c.lower()
                         message.command = ([c] + a) if c in flt.c else None
@@ -253,7 +258,7 @@ class Filters:
         commands = {c if case_sensitive else c.lower() for c in commands}
         prefixes = set(prefix) if prefix else {""}
 
-        return create("Command", func=func, c=commands, p=prefixes, s=separator, cs=case_sensitive)
+        return create("Command", func=func, c=commands, p=prefixes, s=separator, an=args, cs=case_sensitive)
 
     @staticmethod
     def regex(pattern, flags: int = 0):
